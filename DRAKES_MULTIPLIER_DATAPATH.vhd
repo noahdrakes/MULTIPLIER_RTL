@@ -25,15 +25,6 @@ END DRAKES_DATA_PATH;
 
 ARCHITECTURE STRUCTURAL OF DRAKES_DATA_PATH is
 
--- BUFFER --
-COMPONENT DRAKES_TRI_STATE IS
-GENERIC(P:INTEGER:=128);
-PORT(CLK:IN STD_LOGIC;
-     EN: IN STD_LOGIC;
-     MDR_IN:IN STD_LOGIC_VECTOR(P-1 DOWNTO 0);
-     GATE_MDR_OUT:OUT STD_LOGIC_VECTOR(P-1 DOWNTO 0));
-END COMPONENT;
-
 
 
 -- ALU --
@@ -61,20 +52,20 @@ END COMPONENT;
 
 
 
--- SIGN EXTENDER --
+-- -- SIGN EXTENDER --
 
-COMPONENT DRAKES_SIGN_EXTENDER64_128 is
-	GENERIC(
-		P:INTEGER:=128); 
-	port ( 
-		OP_A: in std_logic_vector (63 downto 0) ;  
-		SEXT64: out std_logic_vector (P-1 downto 0) ); 
-END COMPONENT;
-
-
+-- COMPONENT DRAKES_SIGN_EXTENDER64_128 is
+-- 	GENERIC(
+-- 		P:INTEGER:=128); 
+-- 	port ( 
+-- 		OP_A: in std_logic_vector (63 downto 0) ;  
+-- 		SEXT64: out std_logic_vector (P-1 downto 0) ); 
+-- END COMPONENT;
 
 
--- REGISTER --
+
+
+-- 128 BIT REGISTER --
 
 COMPONENT Drakes_128_Bit_Reg is
 
@@ -90,7 +81,7 @@ COMPONENT Drakes_128_Bit_Reg is
 END COMPONENT;
 
 
--- REGISTER --
+-- 64 BIT REGISTER --
 
 COMPONENT Drakes_64_Bit_Reg is
 

@@ -1,33 +1,3 @@
--- BUFFER
-
-library IEEE;
-use ieee.std_logic_1164.all;
-
-entity DRAKES_TRI_STATE IS
-GENERIC(P:INTEGER:=128);
-PORT(CLK:IN STD_LOGIC;
-     EN: IN STD_LOGIC;
-     MDR_IN:IN STD_LOGIC_VECTOR(P-1 DOWNTO 0);
-     GATE_MDR_OUT:OUT STD_LOGIC_VECTOR(P-1 DOWNTO 0));
-end DRAKES_TRI_STATE;
-
-architecture sel_arch of DRAKES_TRI_STATE is
-SIGNAL Sgate:std_logic_vector(P-1 downto 0);
-begin
-PROCESS(CLK)
-BEGIN 
-	IF(CLK='1' AND CLK'EVENT)THEN
-		IF(EN='1')THEN
-		  Sgate<= MDR_IN;
-		ELSE
-		 Sgate<=(OTHERS=>'Z');
-		END IF;
-	ELSE
-	END IF;
-END PROCESS;
-GATE_MDR_OUT<=Sgate;
-end sel_arch;
-
 
 
 
@@ -60,25 +30,6 @@ OP_Q<=S_D;
 end combo_add;
 
 
-
-
--- MUX 2 TO 1 --
-
-library ieee ; 
-use ieee. std_logic_1164. all ; 
-entity MUX2_1 is 
-port ( 
-	OP_A,OP_B: in std_logic_vector(15 downto 0); 
-	s: in std_logic_vector(1 downto 0); 
-	OP_Q: out std_logic_vector (15 downto 0) 
-); 
-end MUX2_1; 
-architecture cond_arch of MUX2_1 is 
-
-begin 
-OP_Q <= OP_A when (s="00") else 
-     	OP_B ;
-end cond_arch ; 
 
 
 
@@ -149,32 +100,6 @@ end behavorial;
 
 
 
--- 128 BIT SIGN EXTENDER
-
-library ieee;
-use ieee.std_logic_1164.all ; 
-entity DRAKES_SIGN_EXTENDER64_128 is
-GENERIC(
-	P:INTEGER:=128); 
-port ( 
-	OP_A: in std_logic_vector (63 downto 0) ;  
-	SEXT64: out std_logic_vector (P-1 downto 0) ); 
-end DRAKES_SIGN_EXTENDER64_128;
-
-architecture sel_arch of DRAKES_SIGN_EXTENDER64_128 is
-
-SIGNAL sOnes :STD_LOGIC_VECTOR(63 downto 0):=(OTHERS=>'1');
-SIGNAL sZeros :STD_LOGIC_VECTOR(63 downto 0):=(OTHERS=>'0');
-SIGNAL sQ :STD_LOGIC_VECTOR(P-1 downto 0);
-
-begin 
-	WITH OP_A(4) SELECT
-	
-	sQ <= sOnes (63 downto 0) &OP_A(63 downto 0) WHEN '1',
-	      sZeros (63 downto 0) &OP_A(63 downto 0) WHEN OTHERS;
-	SEXT64 <= sQ;
-
-end sel_arch;
 
 
  -- 128 BIT REGISTER 
@@ -216,6 +141,8 @@ END BEHAVIORAL;
 
 
 
+
+-- 64 BIT REG --
 library ieee;
 use ieee.std_logic_1164.all;
 
@@ -258,143 +185,35 @@ END BEHAVIORAL;
 
 
 
+-- 128 BIT SIGN EXTENDER
 
+-- library ieee;
+-- use ieee.std_logic_1164.all ; 
+-- entity DRAKES_SIGN_EXTENDER64_128 is
+-- GENERIC(
+-- 	P:INTEGER:=128); 
+-- port ( 
+-- 	OP_A: in std_logic_vector (63 downto 0) ;  
+-- 	SEXT64: out std_logic_vector (P-1 downto 0) ); 
+-- end DRAKES_SIGN_EXTENDER64_128;
 
+-- architecture sel_arch of DRAKES_SIGN_EXTENDER64_128 is
 
+-- SIGNAL sOnes :STD_LOGIC_VECTOR(63 downto 0):=(OTHERS=>'1');
+-- SIGNAL sZeros :STD_LOGIC_VECTOR(63 downto 0):=(OTHERS=>'0');
+-- SIGNAL sQ :STD_LOGIC_VECTOR(P-1 downto 0);
 
-
-
-library ieee;
-use ieee.std_logic_1164.all;
-
-
-
-
-
-library ieee;
-use ieee.std_logic_1164.all ; 
-entity DRAKES_SIGN_EXTENDER64_128 is
-GENERIC(
-	P:INTEGER:=128); 
-port ( 
-	OP_A: in std_logic_vector (63 downto 0) ;  
-	SEXT5: out std_logic_vector (P-1 downto 0) ); 
-end DRAKES_SIGN_EXTENDER64_128;
-
-architecture sel_arch of DRAKES_SIGN_EXTENDER64_128 is
-
-SIGNAL sOnes :STD_LOGIC_VECTOR(63 downto 0):=(OTHERS=>'1');
-SIGNAL sZeros :STD_LOGIC_VECTOR(63 downto 0):=(OTHERS=>'0');
-SIGNAL sQ :STD_LOGIC_VECTOR(P-1 downto 0);
-
-begin 
-	WITH OP_A(4) SELECT
+-- begin 
+-- 	WITH OP_A(4) SELECT
 	
-	sQ <= sOnes (63 downto 0) &OP_A(63 downto 0) WHEN '1',
-	      sZeros (63 downto 0) &OP_A(63 downto 0) WHEN OTHERS;
-	SEXT5 <= sQ;
+-- 	sQ <= sOnes (63 downto 0) &OP_A(63 downto 0) WHEN '1',
+-- 	      sZeros (63 downto 0) &OP_A(63 downto 0) WHEN OTHERS;
+-- 	SEXT64 <= sQ;
 
-end sel_arch;
-
-
-
-
-library ieee;
-use ieee.std_logic_1164.all ; 
-entity DRAKES_SIGN_EXTENDER6 is 
-GENERIC(
-	P:INTEGER:=16); 
-port ( 
-	OP_A: in std_logic_vector (5 downto 0) ;  
-	SEXT6: out std_logic_vector (P-1 downto 0) ); 
-end DRAKES_SIGN_EXTENDER6;
-
-architecture sel_arch of DRAKES_SIGN_EXTENDER6 is
-
-SIGNAL sOnes :STD_LOGIC_VECTOR(9 downto 0):=(OTHERS=>'1');
-SIGNAL sZeros :STD_LOGIC_VECTOR(9 downto 0):=(OTHERS=>'0');
-SIGNAL sQ :STD_LOGIC_VECTOR(15 downto 0);
-
-begin 
-	WITH OP_A(5) SELECT
-	
-	sQ <= sOnes (9 downto 0) &OP_A(5 downto 0) WHEN '1',
-	      sZeros (9 downto 0) &OP_A(5 downto 0) WHEN OTHERS;
-	SEXT6 <= sQ;
-
-end sel_arch;
+-- end sel_arch;
 
 
 
-library ieee;
-use ieee.std_logic_1164.all ; 
-entity DRAKES_SIGN_EXTENDER9 is 
-port ( 
-	OP_A: in std_logic_vector (8 downto 0) ;  
-	OP_Q: out std_logic_vector (15 downto 0) ); 
-end DRAKES_SIGN_EXTENDER9;
-
-architecture sel_arch of DRAKES_SIGN_EXTENDER9 is
-
-SIGNAL sOnes :STD_LOGIC_VECTOR(6 downto 0):=(OTHERS=>'1');
-SIGNAL sZeros :STD_LOGIC_VECTOR(6 downto 0):=(OTHERS=>'0');
-SIGNAL sQ :STD_LOGIC_VECTOR(15 downto 0);
-
-begin 
-	WITH OP_A(8) SELECT
-	
-	sQ <= sOnes (6 downto 0) &OP_A(8 downto 0) WHEN '1',
-	      sZeros (6 downto 0) &OP_A(8 downto 0) WHEN OTHERS;
-	OP_Q <= sQ;
-
-end sel_arch;
 
 
-
-library ieee;
-use ieee.std_logic_1164.all ; 
-entity DRAKES_SIGN_EXTENDER11 is 
-port ( 
-	OP_A: in std_logic_vector (10 downto 0) ;  
-	OP_Q: out std_logic_vector (15 downto 0) ); 
-end DRAKES_SIGN_EXTENDER11;
-
-architecture sel_arch of DRAKES_SIGN_EXTENDER11 is
-
-SIGNAL sOnes :STD_LOGIC_VECTOR(4 downto 0):=(OTHERS=>'1');
-SIGNAL sZeros :STD_LOGIC_VECTOR(4 downto 0):=(OTHERS=>'0');
-SIGNAL sQ :STD_LOGIC_VECTOR(15 downto 0);
-
-begin 
-	WITH OP_A(10) SELECT
-	
-	sQ <= sOnes (4 downto 0) &OP_A(10 downto 0) WHEN '1',
-	      sZeros (4 downto 0) &OP_A(10 downto 0) WHEN OTHERS;
-	OP_Q <= sQ;
-
-end sel_arch;
-
-
--- ZERO EXTENDER
-
-library ieee;
-use ieee.std_logic_1164.all ; 
-entity DRAKES_ZERO_EXTENDER is 
-port ( 
-	OP_A: in std_logic_vector (7 downto 0) ;  
-	OP_Q: out std_logic_vector (15 downto 0) ); 
-end DRAKES_ZERO_EXTENDER;
-
-architecture Z_arch of DRAKES_ZERO_EXTENDER is
-
-SIGNAL sZeros :STD_LOGIC_VECTOR(7 downto 0):=(OTHERS=>'0');
-SIGNAL sQ :STD_LOGIC_VECTOR(15 downto 0);
-
-begin 
-	WITH OP_A(7) SELECT
-	
-	sQ <= sZeros (7 downto 0) &OP_A(7 downto 0) WHEN OTHERS;
-	OP_Q <= sQ;
-
-end z_arch;
 
