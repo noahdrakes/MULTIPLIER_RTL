@@ -149,11 +149,35 @@ end behavorial;
 
 
 
+library ieee;
+use ieee.std_logic_1164.all ; 
+entity DRAKES_SIGN_EXTENDER64_128 is
+GENERIC(
+	P:INTEGER:=128); 
+port ( 
+	OP_A: in std_logic_vector (63 downto 0) ;  
+	SEXT64: out std_logic_vector (P-1 downto 0) ); 
+end DRAKES_SIGN_EXTENDER64_128;
+
+architecture sel_arch of DRAKES_SIGN_EXTENDER64_128 is
+
+SIGNAL sOnes :STD_LOGIC_VECTOR(63 downto 0):=(OTHERS=>'1');
+SIGNAL sZeros :STD_LOGIC_VECTOR(63 downto 0):=(OTHERS=>'0');
+SIGNAL sQ :STD_LOGIC_VECTOR(P-1 downto 0);
+
+begin 
+	WITH OP_A(4) SELECT
+	
+	sQ <= sOnes (63 downto 0) &OP_A(63 downto 0) WHEN '1',
+	      sZeros (63 downto 0) &OP_A(63 downto 0) WHEN OTHERS;
+	SEXT64 <= sQ;
+
+end sel_arch;
 
 
---------------------------------------
--- 			SIGN EXTENDERS 			--
---------------------------------------
+-------------------------------------------------------
+-- 			SIGN EXTENDERS THAT ARE NOT NEEDED		--
+-------------------------------------------------------
 
 
 
@@ -172,25 +196,25 @@ use ieee.std_logic_1164.all;
 
 library ieee;
 use ieee.std_logic_1164.all ; 
-entity DRAKES_SIGN_EXTENDER5 is
+entity DRAKES_SIGN_EXTENDER64_128 is
 GENERIC(
-	P:INTEGER:=16); 
+	P:INTEGER:=128); 
 port ( 
-	OP_A: in std_logic_vector (4 downto 0) ;  
+	OP_A: in std_logic_vector (63 downto 0) ;  
 	SEXT5: out std_logic_vector (P-1 downto 0) ); 
-end DRAKES_SIGN_EXTENDER5;
+end DRAKES_SIGN_EXTENDER64_128;
 
-architecture sel_arch of DRAKES_SIGN_EXTENDER5 is
+architecture sel_arch of DRAKES_SIGN_EXTENDER64_128 is
 
-SIGNAL sOnes :STD_LOGIC_VECTOR(10 downto 0):=(OTHERS=>'1');
-SIGNAL sZeros :STD_LOGIC_VECTOR(10 downto 0):=(OTHERS=>'0');
+SIGNAL sOnes :STD_LOGIC_VECTOR(63 downto 0):=(OTHERS=>'1');
+SIGNAL sZeros :STD_LOGIC_VECTOR(63 downto 0):=(OTHERS=>'0');
 SIGNAL sQ :STD_LOGIC_VECTOR(P-1 downto 0);
 
 begin 
 	WITH OP_A(4) SELECT
 	
-	sQ <= sOnes (10 downto 0) &OP_A(4 downto 0) WHEN '1',
-	      sZeros (10 downto 0) &OP_A(4 downto 0) WHEN OTHERS;
+	sQ <= sOnes (63 downto 0) &OP_A(63 downto 0) WHEN '1',
+	      sZeros (63 downto 0) &OP_A(63 downto 0) WHEN OTHERS;
 	SEXT5 <= sQ;
 
 end sel_arch;

@@ -58,6 +58,18 @@ END COMPONENT;
 
 
 
+-- SIGN EXTENDER --
+
+COMPONENT DRAKES_SIGN_EXTENDER64_128 is
+	GENERIC(
+		P:INTEGER:=128); 
+	port ( 
+		OP_A: in std_logic_vector (63 downto 0) ;  
+		SEXT64: out std_logic_vector (P-1 downto 0) ); 
+END COMPONENT;
+
+
+
 
 BEGIN
 END STRUCTURAL;
