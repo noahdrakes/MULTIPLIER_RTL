@@ -14,6 +14,14 @@ BACKGROUND (Components)
   0, it latches to the value. This is an essential wiring for the Multiplier which gives it its most essential functionality.
 
 
+CONTROL 
+- An input file (controlInput.txt) with the Top level ENABLE and Select Pins are used for our control. The order of the pins are as follows: 
+
+RESET   PRODUCT_REG_EN    ALU_SEL   MCAND_REG_EN    MULT_REG_EN
+
+*NOTE -> the product_reg_en pin does not need to be in this control file, because the enable for the product register is solely 
+controlled by the first bit of the multiplier reg. That value of the product_reg_en in the text file does not control the multiplier. 
+This was left in there for troubleshooting reasons.
 
 SIMULATION
 
