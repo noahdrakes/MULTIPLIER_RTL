@@ -77,16 +77,17 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity shift is 
+generic( width: NATURAL);
 port(
-		OP_A: in std_logic_vector(63 downto 0);
+		OP_A: in std_logic_vector(width-1 downto 0);
 		direction: in std_logic;
-		OP_Q: out std_logic_vector(63 downto 0)
+		OP_Q: out std_logic_vector(width-1 downto 0)
 	);
 end shift;
 
 architecture behavorial of shift is
 	
-	signal output: std_logic_vector(63 downto 0);
+	signal output: std_logic_vector(width-1 downto 0);
 
 begin 
 	
@@ -102,7 +103,7 @@ end behavorial;
 
 
 
- -- 128 BIT REGISTER 
+ -- 128 BIT REGISTER (MCAND)
 library ieee;
 use ieee.std_logic_1164.all;
 
@@ -126,6 +127,46 @@ REG_CLK:PROCESS(CLK)
 	BEGIN
 	  IF(CLK='1' AND CLK'EVENT)THEN
 	     IF(RST='1')THEN
+		 -- INITIAL MCAND VALUE IS 32
+		TEMP_Q<="00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000";
+	     ELSIF(EN='1')THEN
+		TEMP_Q<=OP_A;
+	     ELSE
+		TEMP_Q<=TEMP_Q;
+	     END IF;
+	  ELSE
+		TEMP_Q<=TEMP_Q;
+	  END IF;
+	END PROCESS REG_CLK;
+OP_Q<=TEMP_Q;
+END BEHAVIORAL;
+
+
+
+-- PRODUCT REGISTER
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity Drakes_PRODUCT_Reg is
+
+GENERIC(
+	P :integer:= 128
+	);
+
+ PORT(	CLK: IN STD_LOGIC;
+	RST: IN STD_LOGIC;
+	EN: IN STD_LOGIC;
+	OP_A: IN STD_LOGIC_VECTOR(P-1 DOWNTO 0);
+	OP_Q: OUT STD_LOGIC_VECTOR(P-1 DOWNTO 0));
+END Drakes_PRODUCT_Reg;
+
+ARCHITECTURE BEHAVIORAL OF Drakes_PRODUCT_Reg IS
+	SIGNAL TEMP_Q:STD_LOGIC_VECTOR(P-1 DOWNTO 0);
+BEGIN
+REG_CLK:PROCESS(CLK)
+	BEGIN
+	  IF(CLK='1' AND CLK'EVENT)THEN
+	     IF(RST='1')THEN
 		TEMP_Q<="00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 	     ELSIF(EN='1')THEN
 		TEMP_Q<=OP_A;
@@ -141,8 +182,7 @@ END BEHAVIORAL;
 
 
 
-
--- 64 BIT REG --
+-- 64 BIT REG (MULTIPLIER) --
 library ieee;
 use ieee.std_logic_1164.all;
 
@@ -166,7 +206,8 @@ REG_CLK:PROCESS(CLK)
 	BEGIN
 	  IF(CLK='1' AND CLK'EVENT)THEN
 	     IF(RST='1')THEN
-		TEMP_Q<="0000000000000000000000000000000000000000000000000000000000000000";
+		 -- INITIAL MULT VALUE IS 6
+		TEMP_Q<="0000000000000000000000000000000000000000000000000000000000000110";
 	     ELSIF(EN='1')THEN
 		TEMP_Q<=OP_A;
 	     ELSE
