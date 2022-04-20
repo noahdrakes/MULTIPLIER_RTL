@@ -15,4 +15,11 @@ BACKGROUND (Components)
 
 
 
+SIMULATION
+
+The Product register is loaded with a 0. The multiplicand register is loaded with 0x20 (32 decimal) and the multiplier register is loaded with 0x06 (6 decimal).
+![image](https://user-images.githubusercontent.com/83146040/164147328-34cfd391-2a1d-43e7-9fbe-224d4352695f.png)
+
+
+After the multiplication occurs, the product register latches to C0 (192 decimal) which is the correct answer.
 ![image](https://user-images.githubusercontent.com/83146040/164146712-5b4caa9f-c251-4dd7-b632-94cc9e5607aa.png)
