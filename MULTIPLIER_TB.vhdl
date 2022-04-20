@@ -28,9 +28,7 @@ PORT(
 	PRODUCT_REG_EN: IN STD_LOGIC;
 	ALU_SEL: IN STD_LOGIC_VECTOR(1 downto 0);
 	MCAND_REG_EN: IN STD_LOGIC;
-	MULT_REG_EN: IN STD_LOGIC;
-	MULT_DIRECTION: IN STD_LOGIC;
-	MCAND_DIRECTION: IN STD_LOGIC
+	MULT_REG_EN: IN STD_LOGIC
     
 );
 
@@ -55,8 +53,7 @@ SIGNAL PRODUCT_REG_EN: STD_LOGIC:='X';
 SIGNAL ALU_SEL: STD_LOGIC_VECTOR(1 downto 0):=(OTHERS=>'X');
 SIGNAL MCAND_REG_EN: STD_LOGIC:='X';
 SIGNAL MULT_REG_EN: STD_LOGIC:='X';
-SIGNAL MULT_DIRECTION: STD_LOGIC:='X';
-SIGNAL MCAND_DIRECTION: STD_LOGIC:='X';
+
 
 -- FILE READING SIGNALS
 SIGNAL OP_Q:STD_LOGIC_VECTOR(O-1 downto 0):=(OTHERS=>'X');
@@ -69,7 +66,7 @@ BEGIN
 
 U0:CLOCK port map(CLK);
 InstDRAKES_DATA_PATH:drakes_data_path port MAP (CLK, RESET, PRODUCT_REG_EN, ALU_SEL, MCAND_REG_EN, 
-MULT_REG_EN, MULT_DIRECTION, MCAND_DIRECTION);
+MULT_REG_EN);
 
 
 PROCESS
@@ -84,8 +81,7 @@ variable vPRODUCT_REG_EN: STD_LOGIC:='X';
 variable vALU_SEL: STD_LOGIC_VECTOR(1 downto 0):=(OTHERS=>'X');
 variable vMCAND_REG_EN: STD_LOGIC:='X';
 variable vMULT_REG_EN: STD_LOGIC:='X';
-variable vMULT_DIRECTION: STD_LOGIC:='X';
-variable vMCAND_DIRECTION: STD_LOGIC:='X';
+
 
 variable vOp_Q:std_logic_vector(O-1 downto 0):=(OTHERS=>'X');
 variable vExp_Op_Q:std_logic_vector(O-1 downto 0):=(OTHERS=>'X');
@@ -157,15 +153,6 @@ while(not simcomplete)LOOP
 		read(in_line,vMULT_REG_EN);
 		MULT_REG_EN  <=vMULT_REG_EN;--
 
-		read(in_line,vMULT_DIRECTION);--
-		MULT_DIRECTION  <=vMULT_DIRECTION;
-
-		read(in_line,vMCAND_DIRECTION);--
-		MCAND_DIRECTION  <=vMCAND_DIRECTION;
-
-
-		--read(in_line,vgate_mdr_out);
-		--gate_mdr_out  <=vgate_mdr_out;
 
 		
 		

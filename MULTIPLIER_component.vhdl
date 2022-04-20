@@ -54,7 +54,7 @@ end DRAKES_ALU;
 
 architecture alu_arch of DRAKES_ALU is
 
-signal s_alu: std_logic_vector(15 downto 0);
+signal s_alu: std_logic_vector(OUTPUT-1 downto 0);
 
 begin
 
@@ -70,76 +70,132 @@ end alu_arch;
 
 
 
--- SHIFT LEFT AND RIGHT LOGIC --
+-- SHIFT LEFT LOGIC --
 
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity shift is 
+entity shift_LEFT_128BIT is 
 generic( width: NATURAL);
-port(
-		OP_A: in std_logic_vector(width-1 downto 0);
-		direction: in std_logic;
+port(	
+		CLK: IN STD_LOGIC;
+		RST: IN STD_LOGIC;
+		EN: IN STD_LOGIC;
+		-- OP_A: in std_logic_vector(width-1 downto 0);
 		OP_Q: out std_logic_vector(width-1 downto 0)
 	);
-end shift;
+end shift_LEFT_128BIT;
 
-architecture behavorial of shift is
+architecture behavorial of shift_LEFT_128BIT is
 	
 	signal output: std_logic_vector(width-1 downto 0);
+	signal TEMP_Q: std_logic_vector(width-1 downto 0);
 
 begin 
-	
-		with direction select
-		
-			output <= 	std_logic_vector(shift_left(signed(OP_A),1)) WHEN '0', 
-						std_logic_vector(shift_right(signed(OP_A),1)) WHEN OTHERS;
 
-			OP_Q <= output;
+			REG_CLK:PROCESS(CLK)
+			BEGIN
+			  IF(CLK='1' AND CLK'EVENT)THEN
+				 IF(RST='1')THEN
+				 -- INITIAL MCAND VALUE IS 32
+				TEMP_Q<="00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000";
+				 ELSIF(EN='1')THEN
+				TEMP_Q <= 	std_logic_vector(shift_left(signed(TEMP_Q),1));
+				 ELSE
+				TEMP_Q<=TEMP_Q;
+				 END IF;
+			  ELSE
+				TEMP_Q<=TEMP_Q;
+			  END IF;
+			END PROCESS REG_CLK;
+		OP_Q<=TEMP_Q;
 end behavorial;
 
 
 
 
+-- SHIFT RIGHT LOGIC
 
- -- 128 BIT REGISTER (MCAND)
 library ieee;
 use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
-entity Drakes_128_Bit_Reg is
-
-GENERIC(
-	P :integer:= 128
+entity shift_RIGHT_64BIT is 
+generic( width: NATURAL);
+port(	
+		CLK: IN STD_LOGIC;
+		RST: IN STD_LOGIC;
+		EN: IN STD_LOGIC;
+		-- OP_A: in std_logic_vector(width-1 downto 0);
+		OP_Q: out std_logic_vector(width-1 downto 0)
 	);
+end shift_RIGHT_64BIT;
 
- PORT(	CLK: IN STD_LOGIC;
-	RST: IN STD_LOGIC;
-	EN: IN STD_LOGIC;
-	OP_A: IN STD_LOGIC_VECTOR(P-1 DOWNTO 0);
-	OP_Q: OUT STD_LOGIC_VECTOR(P-1 DOWNTO 0));
-END Drakes_128_Bit_Reg;
+architecture behavorial of shift_RIGHT_64BIT is
+	
+	signal output: std_logic_vector(width-1 downto 0);
+	signal TEMP_Q: std_logic_vector(width-1 downto 0);
 
-ARCHITECTURE BEHAVIORAL OF Drakes_128_Bit_Reg IS
-	SIGNAL TEMP_Q:STD_LOGIC_VECTOR(P-1 DOWNTO 0);
-BEGIN
-REG_CLK:PROCESS(CLK)
-	BEGIN
-	  IF(CLK='1' AND CLK'EVENT)THEN
-	     IF(RST='1')THEN
-		 -- INITIAL MCAND VALUE IS 32
-		TEMP_Q<="00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000";
-	     ELSIF(EN='1')THEN
-		TEMP_Q<=OP_A;
-	     ELSE
-		TEMP_Q<=TEMP_Q;
-	     END IF;
-	  ELSE
-		TEMP_Q<=TEMP_Q;
-	  END IF;
-	END PROCESS REG_CLK;
-OP_Q<=TEMP_Q;
-END BEHAVIORAL;
+begin 
+
+			REG_CLK:PROCESS(CLK)
+			BEGIN
+			  IF(CLK='1' AND CLK'EVENT)THEN
+				 IF(RST='1')THEN
+				 -- INITIAL MCAND VALUE IS 32
+				TEMP_Q<="0000000000000000000000000000000000000000000000000000000000100000";
+				 ELSIF(EN='1')THEN
+				TEMP_Q <= 	std_logic_vector(shift_right(signed(TEMP_Q),1));
+				 ELSE
+				TEMP_Q<=TEMP_Q;
+				 END IF;
+			  ELSE
+				TEMP_Q<=TEMP_Q;
+			  END IF;
+			END PROCESS REG_CLK;
+		OP_Q<=TEMP_Q;
+end behavorial;
+
+
+
+ -- 128 BIT REGISTER (MCAND)
+-- library ieee;
+-- use ieee.std_logic_1164.all;
+
+-- entity Drakes_128_Bit_Reg is
+
+-- GENERIC(
+-- 	P :integer:= 128
+-- 	);
+
+--  PORT(	CLK: IN STD_LOGIC;
+-- 	RST: IN STD_LOGIC;
+-- 	EN: IN STD_LOGIC;
+-- 	OP_A: IN STD_LOGIC_VECTOR(P-1 DOWNTO 0);
+-- 	OP_Q: OUT STD_LOGIC_VECTOR(P-1 DOWNTO 0));
+-- END Drakes_128_Bit_Reg;
+
+-- ARCHITECTURE BEHAVIORAL OF Drakes_128_Bit_Reg IS
+-- 	SIGNAL TEMP_Q:STD_LOGIC_VECTOR(P-1 DOWNTO 0);
+-- BEGIN
+-- REG_CLK:PROCESS(CLK)
+-- 	BEGIN
+-- 	  IF(CLK='1' AND CLK'EVENT)THEN
+-- 	     IF(RST='1')THEN
+-- 		 -- INITIAL MCAND VALUE IS 32
+-- 		TEMP_Q<="00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000";
+-- 	     ELSIF(EN='1')THEN
+-- 		TEMP_Q<=OP_A;
+-- 	     ELSE
+-- 		TEMP_Q<=TEMP_Q;
+-- 	     END IF;
+-- 	  ELSE
+-- 		TEMP_Q<=TEMP_Q;
+-- 	  END IF;
+-- 	END PROCESS REG_CLK;
+-- OP_Q<=TEMP_Q;
+-- END BEHAVIORAL;
 
 
 
@@ -183,42 +239,42 @@ END BEHAVIORAL;
 
 
 -- 64 BIT REG (MULTIPLIER) --
-library ieee;
-use ieee.std_logic_1164.all;
+-- library ieee;
+-- use ieee.std_logic_1164.all;
 
-entity Drakes_64_Bit_Reg is
+-- entity Drakes_64_Bit_Reg is
 
-GENERIC(
-	P :integer:= 64
-	);
+-- GENERIC(
+-- 	P :integer:= 64
+-- 	);
 
- PORT(	CLK: IN STD_LOGIC;
-	RST: IN STD_LOGIC;
-	EN: IN STD_LOGIC;
-	OP_A: IN STD_LOGIC_VECTOR(P-1 DOWNTO 0);
-	OP_Q: OUT STD_LOGIC_VECTOR(P-1 DOWNTO 0));
-END Drakes_64_Bit_Reg;
+--  PORT(	CLK: IN STD_LOGIC;
+-- 	RST: IN STD_LOGIC;
+-- 	EN: IN STD_LOGIC;
+-- 	OP_A: IN STD_LOGIC_VECTOR(P-1 DOWNTO 0);
+-- 	OP_Q: OUT STD_LOGIC_VECTOR(P-1 DOWNTO 0));
+-- END Drakes_64_Bit_Reg;
 
-ARCHITECTURE BEHAVIORAL OF Drakes_64_Bit_Reg IS
-	SIGNAL TEMP_Q:STD_LOGIC_VECTOR(P-1 DOWNTO 0);
-BEGIN
-REG_CLK:PROCESS(CLK)
-	BEGIN
-	  IF(CLK='1' AND CLK'EVENT)THEN
-	     IF(RST='1')THEN
-		 -- INITIAL MULT VALUE IS 6
-		TEMP_Q<="0000000000000000000000000000000000000000000000000000000000000110";
-	     ELSIF(EN='1')THEN
-		TEMP_Q<=OP_A;
-	     ELSE
-		TEMP_Q<=TEMP_Q;
-	     END IF;
-	  ELSE
-		TEMP_Q<=TEMP_Q;
-	  END IF;
-	END PROCESS REG_CLK;
-OP_Q<=TEMP_Q;
-END BEHAVIORAL;
+-- ARCHITECTURE BEHAVIORAL OF Drakes_64_Bit_Reg IS
+-- 	SIGNAL TEMP_Q:STD_LOGIC_VECTOR(P-1 DOWNTO 0);
+-- BEGIN
+-- REG_CLK:PROCESS(CLK)
+-- 	BEGIN
+-- 	  IF(CLK='1' AND CLK'EVENT)THEN
+-- 	     IF(RST='1')THEN
+-- 		 -- INITIAL MULT VALUE IS 6
+-- 		TEMP_Q<="0000000000000000000000000000000000000000000000000000000000000110";
+-- 	     ELSIF(EN='1')THEN
+-- 		TEMP_Q<=OP_A;
+-- 	     ELSE
+-- 		TEMP_Q<=TEMP_Q;
+-- 	     END IF;
+-- 	  ELSE
+-- 		TEMP_Q<=TEMP_Q;
+-- 	  END IF;
+-- 	END PROCESS REG_CLK;
+-- OP_Q<=TEMP_Q;
+-- END BEHAVIORAL;
 
 -------------------------------------------------------
 -- 			SIGN EXTENDERS THAT ARE NOT NEEDED		--
